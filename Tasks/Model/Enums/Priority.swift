@@ -5,6 +5,8 @@
 //  Created by Rahul Serodia on 16/07/25.
 //
 
+import SwiftUI
+
 enum Priority: Int, CaseIterable, Identifiable {
     case high = 1
     case medium
