@@ -25,4 +25,8 @@ class Task: Identifiable {
         self.dueDate = dueDate
         self.priority = priority
     }
+    
+    var clippedDetails: String {
+        return details.truncated(to: 60)
+    }
 }

@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+//TODO: USE ASYNC AWAIT
 class TaskController: ObservableObject {
     private let repository: TaskRepositoryProtocol
     private var fetchedTasks: [Task] = []
@@ -98,5 +99,29 @@ class TaskController: ObservableObject {
         }
         return nil
     }
-    
 }
+
+// Remove later
+#if DEBUG
+extension TaskController {
+    static var preview: TaskController {
+        let controller = TaskController(repository: MockTaskRepository())
+        // Populate with sample tasks
+        let tasks = [
+            Task(title: "Finish Assignment", details: "Complete all parts", isCompleted: false, dueDate: Date(), priority: 2),
+            Task(title: "Buy Groceries", details: "Milk, eggs, bread", isCompleted: true, dueDate: Date().addingTimeInterval(86400), priority: 1),
+            Task(title: "Very Big", details: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.", isCompleted: false, dueDate: Date().addingTimeInterval(-86400), priority: 3)
+        ]
+        controller.fetchedTasks = tasks
+        controller.tasks = tasks
+        return controller
+    }
+}
+
+class MockTaskRepository: TaskRepositoryProtocol {
+    func fetchTasks() -> [Task] { [] }
+    func addTask(_ task: Task) {}
+    func updateTask(_ task: Task) {}
+    func deleteTask(_ task: Task) {}
+}
+#endif

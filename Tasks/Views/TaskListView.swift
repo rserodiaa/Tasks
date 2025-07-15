@@ -46,11 +46,15 @@ struct TaskListView: View {
                     ForEach(controller.tasks) { task in
                         NavigationLink(value: task) {
                             HStack {
+                                ListDateView(date: task.dueDate)
+                                
                                 VStack(alignment: .leading) {
                                     Text(task.title)
                                         .font(.headline)
-                                    Text("\(StringConstants.due) \(controller.formattedDueDate(task.dueDate))")
+                                    Text(task.clippedDetails)
                                         .font(.subheadline)
+                                        
+    
                                 }
                                 Spacer()
                                 Text(controller.priorityDisplayValue(task.priority))
@@ -93,18 +97,10 @@ struct TaskListView: View {
             }
         }
     }
-
-    
-    // refactor
-//    private func deleteTask(at offsets: IndexSet) {
-////        Task {
-//            for index in offsets {
-//                let task = controller.tasks[index]
-//                controller.deleteTask(task)
-//            }
-////        }
-//    }
-    
-    
 }
 
+struct TaskListView_Previews: PreviewProvider {
+    static var previews: some View {
+        TaskListView(controller: .preview)
+    }
+}

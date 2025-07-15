@@ -17,5 +17,6 @@ struct ImageConstants {
 struct StringConstants {
     static let edit = "Edit"
     static let completed = "Completed"
-    static let due = "Due:"
+    static let priority = "Priority"
+    static let dueDate = "Due Date"
 }

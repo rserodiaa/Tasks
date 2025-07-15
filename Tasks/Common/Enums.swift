@@ -43,7 +43,7 @@ enum Priority: Int, CaseIterable, Identifiable {
         switch self {
         case .high: return .red
         case .medium: return .orange
-        case .low: return .gray
+        case .low: return .yellow
         case .unknown: return .blue
         }
     }

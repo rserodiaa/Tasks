@@ -9,8 +9,6 @@ import SwiftUI
 
 private struct Constants {
     static let title = "Title"
-    static let dueDate = "Due Date"
-    static let priority = "Priority"
     static let cancel = "Cancel"
     static let save = "Save"
 }
@@ -34,8 +32,8 @@ struct TaskEditView: View {
                     TextField(Constants.title, text: $title)
                     TextEditor(text: $details)
                         .frame(height: 80)
-                    DatePicker(Constants.dueDate, selection: $dueDate)
-                    Picker(Constants.priority, selection: $priority) {
+                    DatePicker(StringConstants.dueDate, selection: $dueDate)
+                    Picker(StringConstants.priority, selection: $priority) {
                         ForEach(Priority.selectableCases) { priority in
                             Text(priority.value)
                                 .tag(priority)
