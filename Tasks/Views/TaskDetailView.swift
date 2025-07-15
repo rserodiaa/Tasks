@@ -16,15 +16,11 @@ struct TaskDetailView: View {
         ScrollView {
             VStack(spacing: 24) {
 
-
-                // Info Card
                 VStack(alignment: .leading, spacing: 16) {
-                    // Title
                     Text(task.title)
                         .font(.system(size: 28, weight: .bold))
                         .foregroundColor(.primary)
 
-                    // Details
                     if !task.details.isEmpty {
                         Text(task.details)
                             .font(.body)
@@ -33,14 +29,12 @@ struct TaskDetailView: View {
 
                     Divider().padding(.vertical, 4)
 
-                    // Info Rows
-                    infoRow(icon: "calendar", label: StringConstants.dueDate, value: controller.formattedDueDate(task.dueDate))
-                    infoRow(icon: "flag.fill", label: StringConstants.priority, value: controller.priorityDisplayValue(task.priority), color: controller.priorityColor(task.priority))
+                    infoRow(icon: ImageConstants.calendar, label: StringConstants.dueDate, value: task.dueDate.formatted())
+                    infoRow(icon: ImageConstants.flag, label: StringConstants.priority, value: Priority(safeRawValue: task.priority).value, color: Priority(safeRawValue: task.priority).color)
 
-                    // Toggle
                     Toggle(isOn: $task.isCompleted) {
                         Label(task.isCompleted ? "Completed" : "Mark as Completed",
-                              systemImage: task.isCompleted ? "checkmark.seal.fill" : "circle")
+                              systemImage: task.isCompleted ? ImageConstants.checkmark : ImageConstants.circle)
                             .foregroundColor(task.isCompleted ? .green : .gray)
                             .font(.subheadline.weight(.medium))
                     }
@@ -78,11 +72,12 @@ struct TaskDetailView: View {
             }
 
             ToolbarItem(placement: .destructiveAction) {
-                Button(role: .destructive) {
+                Button {
                     controller.delete(task)
                 } label: {
                     Image(systemName: ImageConstants.trash)
                 }
+                .controlSize(.mini)
             }
         }
         .sheet(isPresented: $showEdit) {
@@ -91,7 +86,7 @@ struct TaskDetailView: View {
                 title: task.title,
                 details: task.details,
                 dueDate: task.dueDate,
-                priority: Priority(rawValue: task.priority) ?? .medium,
+                priority: Priority(safeRawValue: task.priority),
                 isCompleted: task.isCompleted,
                 taskToEdit: task
             )
@@ -116,7 +111,8 @@ struct infoRow: View {
                     .font(.body.weight(.medium))
                     .foregroundColor(color)
             }
-        }}
+        }
+    }
 }
 
 #Preview {

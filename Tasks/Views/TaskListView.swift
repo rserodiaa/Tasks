@@ -57,9 +57,9 @@ struct TaskListView: View {
     
                                 }
                                 Spacer()
-                                Text(controller.priorityDisplayValue(task.priority))
-                                    .foregroundColor(controller.priorityColor(task.priority))
-                                if let status = controller.statusImage(for: task) {
+                                Text(Priority(safeRawValue: task.priority).value)
+                                    .foregroundColor(Priority(safeRawValue: task.priority).color)
+                                if let status = task.statusImage {
                                     Image(systemName: status.systemName)
                                         .foregroundColor(status.color)
                                 }
@@ -71,6 +71,7 @@ struct TaskListView: View {
                 .listStyle(.plain)
             }
             .navigationTitle(Constants.tasks)
+            .navigationBarTitleDisplayMode(.automatic)
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
                     Button {
@@ -79,12 +80,6 @@ struct TaskListView: View {
                         Image(systemName: ImageConstants.plus)
                     }
                 }
-            }
-            .onChange(of: controller.sortOption) { _, _ in
-                controller.sortTasks()
-            }
-            .onChange(of: controller.filterOption) { _, _ in
-                controller.filterTasks()
             }
             .navigationDestination(for: Task.self) { task in
                 TaskDetailView(controller: controller, task: task)

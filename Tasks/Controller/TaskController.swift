@@ -5,46 +5,40 @@
 //  Created by Rahul Serodia on 14/07/25.
 //
 
-import SwiftUI
+import Foundation
 
 //TODO: USE ASYNC AWAIT
 class TaskController: ObservableObject {
     private let repository: TaskRepositoryProtocol
-    private var fetchedTasks: [Task] = []
-    @Published var tasks: [Task] = []
+    @Published private(set) var allTasks: [Task] = []
     @Published var sortOption: SortOption = .dueDate
     @Published var filterOption: FilterOption = .all
 
-    init(repository: TaskRepositoryProtocol) {
-        self.repository = repository
-        fetchTasks()
-    }
+    var tasks: [Task] {
+        var result = allTasks
 
-    // MARK: - Filter and Sort Options
-    func filterTasks() {
         switch filterOption {
-        case .all: tasks = fetchedTasks
-        case .completed: tasks = fetchedTasks.filter { $0.isCompleted }
-        case .incomplete: tasks = fetchedTasks.filter { !$0.isCompleted }
+        case .all: break
+        case .completed: result = result.filter { $0.isCompleted }
+        case .incomplete: result = result.filter { !$0.isCompleted }
         }
+
+        switch sortOption {
+        case .dueDate: result.sort { $0.dueDate < $1.dueDate }
+        case .priority: result.sort { $0.priority < $1.priority }
+        }
+        return result
     }
     
-    func sortTasks() {
-        switch sortOption {
-        case .dueDate: tasks.sort { $0.dueDate < $1.dueDate }
-        case .priority: tasks.sort { $0.priority < $1.priority }
-        }
-    }
-
-    private func updateTasks() {
-        filterTasks()
-        sortTasks()
+    init(repository: TaskRepositoryProtocol) {
+        self.repository = repository
+        //TODO: call from view, controller should not fetch tasks on its own
+        fetchTasks()
     }
     
     // MARK: - CRUD operations
     private func fetchTasks() {
-        fetchedTasks = repository.fetchTasks()
-        updateTasks()
+        allTasks = repository.fetchTasks()
     }
 
     func addTask(title: String, details: String, dueDate: Date, priority: Int, isCompleted: Bool = false) {
@@ -74,31 +68,6 @@ class TaskController: ObservableObject {
         repository.deleteTask(task)
         fetchTasks()
     }
-    
-    // MARK: - Presentation Logic
-    func formattedDueDate(_ date: Date) -> String {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        formatter.timeStyle = .short
-        return formatter.string(from: date)
-    }
-    
-    func priorityDisplayValue(_ priority: Int) -> String {
-        Priority(rawValue: priority)?.value ?? "Unknown"
-    }
-    
-    func priorityColor(_ priority: Int) -> Color {
-        Priority(rawValue: priority)?.color ?? .blue
-    }
-    
-    func statusImage(for task: Task) -> (systemName: String, color: Color)? {
-        if task.isCompleted {
-            return (ImageConstants.checkmark, .green)
-        } else if task.dueDate < Date() {
-            return (ImageConstants.exclamation, .red)
-        }
-        return nil
-    }
 }
 
 // Remove later
@@ -112,8 +81,7 @@ extension TaskController {
             Task(title: "Buy Groceries", details: "Milk, eggs, bread", isCompleted: true, dueDate: Date().addingTimeInterval(86400), priority: 1),
             Task(title: "Very Big", details: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.", isCompleted: false, dueDate: Date().addingTimeInterval(-86400), priority: 3)
         ]
-        controller.fetchedTasks = tasks
-        controller.tasks = tasks
+        controller.allTasks = tasks
         return controller
     }
 }

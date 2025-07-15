@@ -8,7 +8,10 @@
 struct ImageConstants {
     static let plus = "plus"
     static let trash = "trash"
-    static let checkmark = "checkmark.circle.fill"
+    static let circle = "circle"
+    static let calendar = "calendar"
+    static let flag = "flag.fill"
+    static let checkmark = "checkmark.seal.fill"
     static let exclamation = "exclamationmark.triangle.fill"
     static let sort = "arrow.up.arrow.down.circle"
     

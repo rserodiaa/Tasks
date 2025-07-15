@@ -28,6 +28,7 @@ struct TasksApp: App {
             let repository = TaskRepository(context: sharedModelContainer.mainContext)
             let controller = TaskController(repository: repository)
             TaskListView(controller: controller)
+                .tint(.orange)
         }
     }
 }
