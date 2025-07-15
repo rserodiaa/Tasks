@@ -7,8 +7,31 @@
 
 import SwiftData
 
-enum SortOption { case dueDate, priority }
-enum FilterOption { case all, completed, incomplete }
+enum SortOption: String, CaseIterable, Identifiable {
+    case dueDate = "Due Date"
+    case priority = "Priority"
+    var id: String { self.rawValue }
+}
+enum FilterOption: String, CaseIterable, Identifiable {
+    case all = "All"
+    case completed = "Completed"
+    case incomplete = "Incomplete"
+    var id: String { self.rawValue }
+}
+
+enum Priority: Int, CaseIterable, Identifiable {
+    case high = 1
+    case medium
+    case low
+    var id: Int { self.rawValue }
+    var value: String {
+        switch self {
+        case .high: return "High"
+        case .medium: return "Medium"
+        case .low: return "Low"
+        }
+    }
+}
 
 // TODO error handling, async await
 class TaskRepository: TaskRepositoryProtocol {
@@ -18,10 +41,10 @@ class TaskRepository: TaskRepositoryProtocol {
         self.context = context
     }
 
-    func fetchTasks(sortBy: SortOption = .dueDate, filter: FilterOption = .all) -> [Task] {
+    func fetchTasks(sortBy: SortOption, filter: FilterOption) -> [Task] {
         var tasks = (try? context.fetch(FetchDescriptor<Task>())) ?? []
         
-        // TODO pass filter to fetch from swift data
+        // TODO move to controller
         switch filter {
         case .all:
             break

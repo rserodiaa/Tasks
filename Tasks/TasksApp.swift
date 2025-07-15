@@ -12,7 +12,7 @@ import SwiftData
 struct TasksApp: App {
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
-            Item.self,
+            Task.self,
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 
@@ -25,8 +25,9 @@ struct TasksApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            let repository = TaskRepository(context: sharedModelContainer.mainContext)
+            let controller = TaskController(repository: repository)
+            TaskListView(controller: controller)
         }
-        .modelContainer(sharedModelContainer)
     }
 }

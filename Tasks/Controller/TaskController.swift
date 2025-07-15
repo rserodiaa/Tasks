@@ -7,6 +7,13 @@
 
 import Foundation
 
+let dateFormatter: DateFormatter = {
+    let formatter = DateFormatter()
+    formatter.dateStyle = .medium
+    formatter.timeStyle = .short
+    return formatter
+}()
+
 class TaskController: ObservableObject {
     private let repository: TaskRepositoryProtocol
     @Published var tasks: [Task] = []
@@ -16,8 +23,9 @@ class TaskController: ObservableObject {
         fetchTasks()
     }
 
-    func fetchTasks() {
-        tasks = repository.fetchTasks()
+    //TODO: Implement sorting and filtering options locally in controller
+    func fetchTasks(sortBy: SortOption = .dueDate, filter: FilterOption = .all) {
+        tasks = repository.fetchTasks(sortBy: sortBy, filter: filter)
     }
 
     func addTask(title: String, details: String, dueDate: Date, priority: Int, isCompleted: Bool = false) {
