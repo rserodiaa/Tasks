@@ -7,6 +7,14 @@
 
 import SwiftUI
 
+private struct Constants {
+    static let title = "Title"
+    static let dueDate = "Due Date"
+    static let priority = "Priority"
+    static let cancel = "Cancel"
+    static let save = "Save"
+}
+
 struct TaskEditView: View {
     @Environment(\.dismiss) private var dismiss
     @ObservedObject var controller: TaskController
@@ -23,28 +31,28 @@ struct TaskEditView: View {
         NavigationStack {
             Form {
                 Section {
-                    TextField("Title", text: $title)
+                    TextField(Constants.title, text: $title)
                     TextEditor(text: $details)
                         .frame(height: 80)
-                    DatePicker("Due Date", selection: $dueDate)
-                    Picker("Priority", selection: $priority) {
-                        ForEach(Priority.allCases) { priority in
+                    DatePicker(Constants.dueDate, selection: $dueDate)
+                    Picker(Constants.priority, selection: $priority) {
+                        ForEach(Priority.selectableCases) { priority in
                             Text(priority.value)
                                 .tag(priority)
                         }
                     }
                 }
                 if taskToEdit != nil {
-                    Toggle("Completed", isOn: $isCompleted)
+                    Toggle(StringConstants.completed, isOn: $isCompleted)
                 }
             }
-            .navigationTitle(taskToEdit == nil ? "Add Task" : "Edit Task")
+            .navigationTitle("\(taskToEdit == nil ? "Add" : "Edit") Task")
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") { dismiss() }
+                    Button(Constants.cancel) { dismiss() }
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Save") {
+                    Button(Constants.save) {
                         if let task = taskToEdit {
                             controller.updateTask(task, title: title, details: details, dueDate: dueDate, priority: priority.id, isCompleted: isCompleted)
                         } else {

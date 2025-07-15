@@ -6,7 +6,7 @@
 //
 
 protocol TaskRepositoryProtocol {
-    func fetchTasks(sortBy: SortOption, filter: FilterOption) -> [Task]
+    func fetchTasks() -> [Task]
     func addTask(_ task: Task)
     func updateTask(_ task: Task)
     func deleteTask(_ task: Task)

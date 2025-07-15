@@ -7,18 +7,20 @@
 
 import SwiftUI
 
+private struct Constants {
+    static let filter = "Filter"
+    static let tasks = "Tasks"
+}
+
 struct TaskListView: View {
     @StateObject var controller: TaskController
-
-    @State private var sortOption: SortOption = .dueDate
-    @State private var filterOption: FilterOption = .all
     @State private var showCreate = false
 
     var body: some View {
         NavigationStack {
             VStack {
                 HStack {
-                    Picker("Filter", selection: $filterOption) {
+                    Picker(Constants.filter, selection: $controller.filterOption) {
                         ForEach(FilterOption.allCases) { option in
                             Text(option.id).tag(option)
                         }
@@ -28,13 +30,13 @@ struct TaskListView: View {
                     Menu {
                         ForEach(SortOption.allCases) { option in
                             Button {
-                                sortOption = option
+                                controller.sortOption = option
                             } label: {
                                 Text(option.id)
                             }
                         }
                     } label: {
-                        Image(systemName: "arrow.up.arrow.down.circle")
+                        Image(systemName: ImageConstants.sort)
                             .font(.title2)
                     }
                 }
@@ -47,41 +49,38 @@ struct TaskListView: View {
                                 VStack(alignment: .leading) {
                                     Text(task.title)
                                         .font(.headline)
-                                    Text("Due: \(task.dueDate, formatter: dateFormatter)")
+                                    Text("\(StringConstants.due) \(controller.formattedDueDate(task.dueDate))")
                                         .font(.subheadline)
                                 }
                                 Spacer()
-                                Text(priorityText(task.priority))
-                                    .foregroundColor(priorityColor(task.priority))
-                                if task.isCompleted {
-                                    Image(systemName: "checkmark.circle.fill")
-                                        .foregroundColor(.green)
-                                } else if task.dueDate < Date() {
-                                    Image(systemName: "exclamationmark.triangle.fill")
-                                        .foregroundColor(.red)
+                                Text(controller.priorityDisplayValue(task.priority))
+                                    .foregroundColor(controller.priorityColor(task.priority))
+                                if let status = controller.statusImage(for: task) {
+                                    Image(systemName: status.systemName)
+                                        .foregroundColor(status.color)
                                 }
                             }
                         }
                     }
-                    .onDelete(perform: deleteTask)
+                    .onDelete(perform: controller.deleteTask)
                 }
                 .listStyle(.plain)
             }
-            .navigationTitle("Tasks")
+            .navigationTitle(Constants.tasks)
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
                     Button {
                         showCreate = true
                     } label: {
-                        Image(systemName: "plus")
+                        Image(systemName: ImageConstants.plus)
                     }
                 }
             }
-            .onChange(of: sortOption) { _, _ in
-                controller.fetchTasks(sortBy: sortOption, filter: filterOption)
+            .onChange(of: controller.sortOption) { _, _ in
+                controller.sortTasks()
             }
-            .onChange(of: filterOption) { _, _ in
-                controller.fetchTasks(sortBy: sortOption, filter: filterOption)
+            .onChange(of: controller.filterOption) { _, _ in
+                controller.filterTasks()
             }
             .navigationDestination(for: Task.self) { task in
                 TaskDetailView(controller: controller, task: task)
@@ -95,28 +94,17 @@ struct TaskListView: View {
         }
     }
 
-    private func deleteTask(at offsets: IndexSet) {
-//        Task {
-            for index in offsets {
-                let task = controller.tasks[index]
-                controller.deleteTask(task)
-            }
-//        }
-    }
     
-    func priorityText(_ priority: Int) -> String {
-        switch priority {
-        case 1: return "High"
-        case 2: return "Medium"
-        default: return "Low"
-        }
-    }
-    func priorityColor(_ priority: Int) -> Color {
-        switch priority {
-        case 1: return .red
-        case 2: return .orange
-        default: return .gray
-        }
-    }
+    // refactor
+//    private func deleteTask(at offsets: IndexSet) {
+////        Task {
+//            for index in offsets {
+//                let task = controller.tasks[index]
+//                controller.deleteTask(task)
+//            }
+////        }
+//    }
+    
+    
 }
 

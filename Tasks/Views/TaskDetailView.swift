@@ -7,6 +7,11 @@
 
 import SwiftUI
 
+private struct Constants {
+    static let priority = "Priority:"
+    static let header = "Task Details"
+}
+
 struct TaskDetailView: View {
     @ObservedObject var controller: TaskController
     @State var task: Task
@@ -16,25 +21,25 @@ struct TaskDetailView: View {
         VStack(alignment: .leading, spacing: 16) {
             Text(task.title).font(.largeTitle)
             Text(task.details).font(.body)
-            Text("Due: \(task.dueDate, formatter: dateFormatter)")
-            Text("Priority: \(priorityText(task.priority))")
-            Toggle("Completed", isOn: $task.isCompleted)
+            Text("\(StringConstants.due) \(controller.formattedDueDate(task.dueDate))")
+            Text("\(Constants.priority) \(Priority(rawValue: task.priority)?.value ?? "")")
+            Toggle(StringConstants.completed, isOn: $task.isCompleted)
                 .onChange(of: task.isCompleted) { _, _ in
                     controller.updateTask(task, title: task.title, details: task.details, dueDate: task.dueDate, priority: task.priority, isCompleted: task.isCompleted)
                 }
             Spacer()
         }
         .padding()
-        .navigationTitle("Task Details")
+        .navigationTitle(Constants.header)
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
-                Button("Edit") { showEdit = true }
+                Button(StringConstants.edit) { showEdit = true }
             }
             ToolbarItem(placement: .destructiveAction) {
                 Button(role: .destructive) {
-                    controller.deleteTask(task)
+                    controller.delete(task)
                 } label: {
-                    Image(systemName: "trash")
+                    Image(systemName: ImageConstants.trash)
                 }
             }
         }
@@ -48,14 +53,6 @@ struct TaskDetailView: View {
                 isCompleted: task.isCompleted,
                 taskToEdit: task
             )
-        }
-    }
-
-    func priorityText(_ priority: Int) -> String {
-        switch priority {
-        case 1: return "High"
-        case 2: return "Medium"
-        default: return "Low"
         }
     }
 }
