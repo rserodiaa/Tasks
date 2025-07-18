@@ -14,6 +14,8 @@ struct ImageConstants {
     static let checkmark = "checkmark.seal.fill"
     static let exclamation = "calendar.badge.exclamationmark"
     static let sort = "arrow.up.arrow.down.circle"
+    static let left = "chevron.left"
+    static let right = "chevron.right"
     
 }
 
@@ -23,4 +25,10 @@ struct StringConstants {
     static let priority = "Priority"
     static let dueDate = "Due Date"
     static let setReminder = "Set Reminder"
+}
+
+enum CustomTabs: String, CaseIterable {
+    case home = "house.circle"
+    case calendar = "calendar.circle"
+
 }

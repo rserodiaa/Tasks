@@ -27,8 +27,8 @@ struct TasksApp: App {
         WindowGroup {
             let repository = TaskRepository(context: sharedModelContainer.mainContext)
             let controller = TaskController(repository: repository)
-            TaskListView(controller: controller)
-                .tint(.orange)
+            MainTabView(controller: controller)
+                            .tint(.orange)
         }
     }
 }

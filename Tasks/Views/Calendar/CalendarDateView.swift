@@ -1,0 +1,41 @@
+//
+//  CalendarDateView.swift
+//  Tasks
+//
+//  Created by Rahul Serodia on 18/07/25.
+//
+
+import SwiftUI
+
+struct CalendarDateView: View {
+    let date: Date
+    let controller: TaskController
+
+    var body: some View {
+        let tasks = controller.tasksByDay[date] ?? []
+        let day = Calendar.current.component(.day, from: date)
+        let isToday = Calendar.current.isDate(date, inSameDayAs: Date())
+
+        ZStack(alignment: .center) {
+            Circle()
+                .fill(isToday ? Color.blue : Color.clear)
+                .frame(width: 36, height: 36)
+                .overlay(
+                    Text("\(day)")
+                        .fontWeight(.medium)
+                        .foregroundColor(isToday ? .white : .primary)
+                )
+
+            // Color dot indicator for tasks
+            if !tasks.isEmpty {
+                Rectangle()
+                    .fill(Priority(safeRawValue: tasks.first!.priority).color)//tasks.first!.priorityColor)
+                    .frame(width: 6, height: 6)
+                    .cornerRadius(3)
+                    .offset(y: 20)
+            }
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .contentShape(Rectangle())
+    }
+}

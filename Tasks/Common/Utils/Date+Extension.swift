@@ -15,3 +15,11 @@ extension Date {
         return formatter.string(from: self)
     }
 }
+
+extension DateFormatter {
+    static let monthYear: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MMMM yyyy"
+        return formatter
+    }()
+}

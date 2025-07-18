@@ -15,9 +15,11 @@ private struct Constants {
 struct TaskListView: View {
     @StateObject var controller: TaskController
     @State private var showCreate = false
+    @State var selectedTab = CustomTabs.home.rawValue
 
     var body: some View {
         NavigationStack {
+            ZStack(alignment: .bottom) {
             VStack {
                 HStack {
                     Picker(Constants.filter, selection: $controller.filterOption) {
@@ -41,7 +43,7 @@ struct TaskListView: View {
                     }
                 }
                 .padding(.horizontal)
-
+                
                 List {
                     ForEach(controller.tasks) { task in
                         NavigationLink(value: task) {
@@ -52,6 +54,8 @@ struct TaskListView: View {
                 }
                 .listStyle(.plain)
             }
+                CustomTabView(selectedTab: $selectedTab)
+        }
             .navigationTitle(Constants.tasks)
             .navigationBarTitleDisplayMode(.automatic)
             .toolbar {
@@ -76,8 +80,6 @@ struct TaskListView: View {
     }
 }
 
-struct TaskListView_Previews: PreviewProvider {
-    static var previews: some View {
-        TaskListView(controller: .preview)
-    }
+#Preview {
+    TaskListView(controller: .preview)
 }
