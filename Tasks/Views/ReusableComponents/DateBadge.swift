@@ -1,5 +1,5 @@
 //
-//  ListDateView.swift
+//  DateBadge.swift
 //  Tasks
 //
 //  Created by Rahul Serodia on 15/07/25.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ListDateView: View {
+struct DateBadge: View {
     let date: Date
     
     var day: String {
@@ -28,7 +28,7 @@ struct ListDateView: View {
                 .font(.headline)
                 .foregroundColor(.white)
                 .frame(maxWidth: .infinity)
-                .padding(3)
+                .padding(4)
                 .background(Color.orange)
 
             Text(month)
@@ -45,5 +45,5 @@ struct ListDateView: View {
 }
 
 #Preview {
-    ListDateView(date: .now)
+    DateBadge(date: .now)
 }

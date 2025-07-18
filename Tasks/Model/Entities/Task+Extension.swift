@@ -11,7 +11,7 @@ extension Task {
         return details.truncated(to: 60)
     }
     
-    var statusImage: (systemName: String, color: Color)? {
+    var statusImage: (imageName: String, color: Color)? {
         if isCompleted { return (ImageConstants.checkmark, .green) }
         else if dueDate < .now { return (ImageConstants.exclamation, .red) }
         else { return nil }

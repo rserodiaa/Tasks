@@ -22,6 +22,7 @@ struct TaskEditView: View {
     @State var dueDate: Date = .now
     @State var priority: Priority = .medium
     @State var isCompleted: Bool = false
+    @State private var isReminderEnabled: Bool = false
 
     let taskToEdit: Task?
 
@@ -40,8 +41,15 @@ struct TaskEditView: View {
                         }
                     }
                 }
+                
+                Section("Reminders") {
+                    Toggle(StringConstants.setReminder, isOn: $isReminderEnabled)
+                }
+                
                 if taskToEdit != nil {
-                    Toggle(StringConstants.completed, isOn: $isCompleted)
+                    Section("Status") {
+                        Toggle(StringConstants.completed, isOn: $isCompleted)
+                    }
                 }
             }
             .navigationTitle("\(taskToEdit == nil ? "Add" : "Edit") Task")

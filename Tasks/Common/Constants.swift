@@ -12,7 +12,7 @@ struct ImageConstants {
     static let calendar = "calendar"
     static let flag = "flag.fill"
     static let checkmark = "checkmark.seal.fill"
-    static let exclamation = "exclamationmark.triangle.fill"
+    static let exclamation = "calendar.badge.exclamationmark"
     static let sort = "arrow.up.arrow.down.circle"
     
 }
@@ -22,4 +22,5 @@ struct StringConstants {
     static let completed = "Completed"
     static let priority = "Priority"
     static let dueDate = "Due Date"
+    static let setReminder = "Set Reminder"
 }

@@ -45,25 +45,7 @@ struct TaskListView: View {
                 List {
                     ForEach(controller.tasks) { task in
                         NavigationLink(value: task) {
-                            HStack {
-                                ListDateView(date: task.dueDate)
-                                
-                                VStack(alignment: .leading) {
-                                    Text(task.title)
-                                        .font(.headline)
-                                    Text(task.clippedDetails)
-                                        .font(.subheadline)
-                                        
-    
-                                }
-                                Spacer()
-                                Text(Priority(safeRawValue: task.priority).value)
-                                    .foregroundColor(Priority(safeRawValue: task.priority).color)
-                                if let status = task.statusImage {
-                                    Image(systemName: status.systemName)
-                                        .foregroundColor(status.color)
-                                }
-                            }
+                            TaskCard(task: task)
                         }
                     }
                     .onDelete(perform: controller.deleteTask)
