@@ -11,15 +11,15 @@ struct CalendarDateListView: View {
     let tasks: [TaskItem]
     
     var body: some View {
-        List(tasks) { task in
-            VStack(alignment: .leading) {
-                Text(task.title)
-                    .bold()
-                Text(task.details)
-                    .foregroundColor(.secondary)
-                Text(task.dueDate, style: .time)
-                    .foregroundColor(.gray)
+        ZStack {
+            Image("backdrop")
+                .resizable()
+                .ignoresSafeArea()
+            List(tasks) { task in
+                TaskCard(task: task)
             }
+            .scrollContentBackground(.hidden)
+            .background(Color.white.opacity(0.3))
         }
         .navigationTitle(tasks.first?.dueDate.formatted(.dateTime.day(.twoDigits).month(.abbreviated)) ?? StringConstants.tasks)
     }

@@ -12,6 +12,9 @@ import Foundation
 class TaskController: ObservableObject {
     private let repository: TaskRepositoryProtocol
     private let notificationService: NotificationServiceProtocol
+    lazy var service: NotificationServiceProtocol = {
+        return NotificationService.shared
+    }()
 
     @Published private(set) var allTasks: [TaskItem] = [] {
         didSet {

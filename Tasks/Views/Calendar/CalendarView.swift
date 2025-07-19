@@ -25,12 +25,12 @@ struct CalendarView: View {
                     LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 7)) {
                         ForEach(allDaysInMonth(month: currentMonth, year: currentYear), id: \.self) { date in
                             NavigationLink(value: date) {
-                                CalendarDateView(date: date, controller: controller)
+                                CalendarDateView(date: date, tasks: controller.tasksByDay[date] ?? [])
                             }
                         }
                     }
-                    .padding(.horizontal)
                 }
+                .padding(.horizontal)
             }
             .navigationDestination(for: Date.self) { date in
                 CalendarDateListView(tasks: controller.tasksByDay[date] ?? [])
@@ -48,7 +48,6 @@ struct CalendarView: View {
                     .foregroundColor(.secondary)
             }
         }
-        .padding(.horizontal)
     }
     
     private var calenderHeader: some View {

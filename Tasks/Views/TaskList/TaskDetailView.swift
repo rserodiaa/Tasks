@@ -54,7 +54,7 @@ struct TaskDetailView: View {
                 .padding()
                 .background(
                     RoundedRectangle(cornerRadius: 20)
-                        .fill(.orange.opacity(0.15))
+                        .fill(.gray.opacity(0.15))
                         .background(.regularMaterial)
                 )
                 .clipShape(RoundedRectangle(cornerRadius: 20))

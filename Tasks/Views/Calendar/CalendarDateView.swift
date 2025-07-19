@@ -9,10 +9,9 @@ import SwiftUI
 
 struct CalendarDateView: View {
     let date: Date
-    let controller: TaskController
+    let tasks: [TaskItem]
 
     var body: some View {
-        let tasks = controller.tasksByDay[date] ?? []
         let day = Calendar.current.component(.day, from: date)
         let isToday = Calendar.current.isDate(date, inSameDayAs: Date())
 
@@ -29,10 +28,10 @@ struct CalendarDateView: View {
             // Color dot indicator for tasks
             if !tasks.isEmpty {
                 Rectangle()
-                    .fill(Priority(safeRawValue: tasks.first!.priority).color)//tasks.first!.priorityColor)
+                    .fill(Priority(safeRawValue: tasks.first!.priority).color)
                     .frame(width: 6, height: 6)
                     .cornerRadius(3)
-                    .offset(y: 20)
+                    .offset(y: 25)
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
