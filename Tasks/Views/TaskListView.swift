@@ -9,13 +9,11 @@ import SwiftUI
 
 private struct Constants {
     static let filter = "Filter"
-    static let tasks = "Tasks"
 }
 
 struct TaskListView: View {
     @StateObject var controller: TaskController
     @State private var showCreate = false
-    @State var selectedTab = CustomTabs.home.rawValue
 
     var body: some View {
         NavigationStack {
@@ -50,13 +48,12 @@ struct TaskListView: View {
                             TaskCard(task: task)
                         }
                     }
-                    .onDelete(perform: controller.deleteTask)
+                    .onDelete(perform: deleteTasks)
                 }
                 .listStyle(.plain)
             }
-                CustomTabView(selectedTab: $selectedTab)
         }
-            .navigationTitle(Constants.tasks)
+            .navigationTitle(StringConstants.tasks)
             .navigationBarTitleDisplayMode(.automatic)
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
@@ -67,7 +64,7 @@ struct TaskListView: View {
                     }
                 }
             }
-            .navigationDestination(for: Task.self) { task in
+            .navigationDestination(for: TaskItem.self) { task in
                 TaskDetailView(controller: controller, task: task)
             }
             .sheet(isPresented: $showCreate) {
@@ -75,6 +72,18 @@ struct TaskListView: View {
                     controller: controller,
                     taskToEdit: nil
                 )
+            }
+        }
+        .task {
+            await controller.loadTasks()
+        }
+    }
+    
+    private func deleteTasks(at offsets: IndexSet) {
+        Task {
+            for index in offsets {
+                let task = controller.tasks[index]
+                await controller.delete(task)
             }
         }
     }

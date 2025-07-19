@@ -13,20 +13,28 @@ struct CalendarView: View {
     @State private var currentYear = Calendar.current.component(.year, from: Date())
     
     var body: some View {
-        VStack(spacing: 0) {
-            calenderHeader
-            dayLabels
-            LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 7)) {
-                ForEach(allDaysInMonth(month: currentMonth, year: currentYear), id: \.self) { date in
-                    NavigationLink(value: date) {
-                        CalendarDateView(date: date, controller: controller)
+        NavigationStack {
+            ZStack {
+                Image("backdrop")
+                    .resizable()
+                    .ignoresSafeArea()
+                    
+                VStack(alignment: .center, spacing: 0) {
+                    calenderHeader
+                    dayLabels
+                    LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 7)) {
+                        ForEach(allDaysInMonth(month: currentMonth, year: currentYear), id: \.self) { date in
+                            NavigationLink(value: date) {
+                                CalendarDateView(date: date, controller: controller)
+                            }
+                        }
                     }
+                    .padding(.horizontal)
                 }
             }
-            .padding(.horizontal)
-        }
-        .navigationDestination(for: Date.self) { date in
-            CalendarDateListView(tasks: controller.tasksByDay[date] ?? [])
+            .navigationDestination(for: Date.self) { date in
+                CalendarDateListView(tasks: controller.tasksByDay[date] ?? [])
+            }
         }
     }
     
@@ -46,7 +54,8 @@ struct CalendarView: View {
     private var calenderHeader: some View {
         return HStack {
             Button { updateMonth(-1) } label: {
-                Image(systemName: ImageConstants.left).font(.headline)
+                Image(systemName: ImageConstants.left)
+                    .font(.headline)
             }
             Text(currentMonthTitle())
                 .font(.title2)
@@ -83,8 +92,6 @@ struct CalendarView: View {
     func currentMonthTitle() -> String {
         return DateFormatter.monthYear.string(from: Calendar.current.date(from: DateComponents(year: currentYear, month: currentMonth))!)
     }
-    
-
 }
 
 #Preview {

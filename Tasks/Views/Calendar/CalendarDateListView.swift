@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct CalendarDateListView: View {
-    let tasks: [Task]
+    let tasks: [TaskItem]
     
     var body: some View {
         List(tasks) { task in
@@ -21,6 +21,6 @@ struct CalendarDateListView: View {
                     .foregroundColor(.gray)
             }
         }
-        .navigationTitle(tasks.first?.dueDate.formatted(.dateTime.day(.twoDigits).month(.abbreviated)) ?? "Tasks")
+        .navigationTitle(tasks.first?.dueDate.formatted(.dateTime.day(.twoDigits).month(.abbreviated)) ?? StringConstants.tasks)
     }
 }

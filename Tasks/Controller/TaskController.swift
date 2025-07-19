@@ -7,22 +7,23 @@
 
 import Foundation
 
-//TODO: USE ASYNC AWAIT
+// TODO: CATCH, manually remove from allTasks
+@MainActor
 class TaskController: ObservableObject {
     private let repository: TaskRepositoryProtocol
     private let notificationService: NotificationServiceProtocol
 
-    @Published private(set) var allTasks: [Task] = [] {
+    @Published private(set) var allTasks: [TaskItem] = [] {
         didSet {
             buildTasksByDay()
         }
     }
     @Published var sortOption: SortOption = .dueDate
     @Published var filterOption: FilterOption = .all
-    private(set) var tasksByDay: [Date: [Task]] = [:]
+    private(set) var tasksByDay: [Date: [TaskItem]] = [:]
 
 
-    var tasks: [Task] {
+    var tasks: [TaskItem] {
         var result = allTasks
 
         switch filterOption {
@@ -41,13 +42,12 @@ class TaskController: ObservableObject {
     init(repository: TaskRepositoryProtocol, notificationService: NotificationServiceProtocol) {
         self.repository = repository
         self.notificationService = notificationService
-        //TODO: call from view, controller should not fetch tasks on its own
-        fetchTasks()
     }
     
     // MARK: - CRUD operations
-    private func fetchTasks() {
-        allTasks = repository.fetchTasks()
+    func loadTasks() async {
+        let tasks = await repository.fetchTasks()
+        self.allTasks = tasks
     }
 
     func addTask(
@@ -57,42 +57,41 @@ class TaskController: ObservableObject {
         priority: Int,
         isCompleted: Bool = false,
         setReminder: Bool = false
-    ) {
-        let task = Task(title: title, details: details, isCompleted: isCompleted, dueDate: dueDate, priority: priority)
-        repository.addTask(task)
-        handleNotification(for: task, shouldSchedule: setReminder)
-        fetchTasks()
+    ) async {
+        let task = TaskItem(title: title, details: details, isCompleted: isCompleted, dueDate: dueDate, priority: priority)
+        await repository.addTask(task)
+        
+        if setReminder {
+            await handleNotification(for: task)
+        }
+        await loadTasks()
     }
     
     func updateTask(
-        _ task: Task,
+        _ task: TaskItem,
         title: String,
         details: String,
         dueDate: Date,
         priority: Int,
         isCompleted: Bool,
         setReminder: Bool = false
-    ) {
+    ) async {
         task.title = title
         task.details = details
         task.dueDate = dueDate
         task.priority = priority
         task.isCompleted = isCompleted
-        repository.updateTask(task)
-        await handleNotification(for: task, shouldSchedule: setReminder && !isCompleted)
-        fetchTasks()
+        await repository.updateTask(task)
+        if (setReminder && !isCompleted) {
+            await handleNotification(for: task)
+        }
+        
+        await loadTasks()
     }
 
-    func deleteTask(at offsets: IndexSet) {
-        offsets.forEach { index in
-            repository.deleteTask(tasks[index])
-        }
-        fetchTasks()
-    }
-    
-    func delete(_ task: Task) {
-        repository.deleteTask(task)
-        fetchTasks()
+    func delete(_ task: TaskItem) async {
+        await repository.deleteTask(task)
+        await loadTasks()
     }
     
     // MARK: - Calender operations
@@ -103,17 +102,13 @@ class TaskController: ObservableObject {
     }
     
     // MARK: - Notification Logic
-    func handleNotification(for task: Task, shouldSchedule: Bool) async {
-            if shouldSchedule {
-                await notificationService.scheduleNotification(
-                    title: "Reminder: \(task.title)",
-                    body: "Task is due at \(task.dueDate)",
-                    date: task.dueDate,
-                    id: task.id.uuidString
-                )
-            } else {
-                await notificationService.cancelNotification(id: task.id.uuidString)
-            }
+    func handleNotification(for task: TaskItem, shouldCancel: Bool = false) async {
+        await notificationService.scheduleNotification(
+            title: "Reminder: \(task.title)",
+            body: "Task is due at \(task.dueDate)",
+            date: task.dueDate,
+            id: task.id.uuidString
+        )
     }
 }
 
@@ -121,25 +116,25 @@ class TaskController: ObservableObject {
 #if DEBUG
 extension TaskController {
     static var preview: TaskController {
-        let controller = TaskController(repository: MockTaskRepository())
+        let controller = TaskController(repository: MockTaskRepository(), notificationService: NotificationService.shared)
         controller.allTasks = mockTask
         return controller
     }
     
     static let mockTask = [
-        Task(title: "Finish Assignment", details: "Complete all parts", isCompleted: false, dueDate: Date(), priority: 2),
-        Task(title: "Finish Assignment", details: "Complete all parts", isCompleted: false, dueDate: Date(), priority: 2),
-        Task(title: "Finish Assignment", details: "Complete all parts", isCompleted: false, dueDate: Date(), priority: 2),
-        Task(title: "Buy Groceries", details: "Milk, eggs, bread", isCompleted: true, dueDate: Date().addingTimeInterval(86400), priority: 1),
-        Task(title: "Buy Groceries", details: "Milk, eggs, bread", isCompleted: false, dueDate: Date().addingTimeInterval(86400), priority: 1),
-        Task(title: "Very Big", details: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.", isCompleted: false, dueDate: Date().addingTimeInterval(-86400), priority: 3)
+        TaskItem(title: "Finish Assignment", details: "Complete all parts", isCompleted: false, dueDate: Date(), priority: 2),
+        TaskItem(title: "Finish Assignment", details: "Complete all parts", isCompleted: false, dueDate: Date(), priority: 2),
+        TaskItem(title: "Finish Assignment", details: "Complete all parts", isCompleted: false, dueDate: Date(), priority: 2),
+        TaskItem(title: "Buy Groceries", details: "Milk, eggs, bread", isCompleted: true, dueDate: Date().addingTimeInterval(86400), priority: 1),
+        TaskItem(title: "Buy Groceries", details: "Milk, eggs, bread", isCompleted: false, dueDate: Date().addingTimeInterval(86400), priority: 1),
+        TaskItem(title: "Very Big", details: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.", isCompleted: false, dueDate: Date().addingTimeInterval(-86400), priority: 3)
     ]
 }
 
 class MockTaskRepository: TaskRepositoryProtocol {
-    func fetchTasks() -> [Task] { [] }
-    func addTask(_ task: Task) {}
-    func updateTask(_ task: Task) {}
-    func deleteTask(_ task: Task) {}
+    func fetchTasks() -> [TaskItem] { [] }
+    func addTask(_ task: TaskItem) {}
+    func updateTask(_ task: TaskItem) {}
+    func deleteTask(_ task: TaskItem) {}
 }
 #endif

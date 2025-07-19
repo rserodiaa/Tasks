@@ -12,7 +12,7 @@ import SwiftData
 struct TasksApp: App {
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
-            Task.self,
+            TaskItem.self,
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 
@@ -25,8 +25,9 @@ struct TasksApp: App {
 
     var body: some Scene {
         WindowGroup {
+            let notificationService = NotificationService.shared
             let repository = TaskRepository(context: sharedModelContainer.mainContext)
-            let controller = TaskController(repository: repository)
+            let controller = TaskController(repository: repository, notificationService: notificationService)
             MainTabView(controller: controller)
                             .tint(.orange)
         }

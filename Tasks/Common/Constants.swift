@@ -16,10 +16,10 @@ struct ImageConstants {
     static let sort = "arrow.up.arrow.down.circle"
     static let left = "chevron.left"
     static let right = "chevron.right"
-    
 }
 
 struct StringConstants {
+    static let tasks = "Tasks"
     static let edit = "Edit"
     static let completed = "Completed"
     static let priority = "Priority"
@@ -30,5 +30,4 @@ struct StringConstants {
 enum CustomTabs: String, CaseIterable {
     case home = "house.circle"
     case calendar = "calendar.circle"
-
 }

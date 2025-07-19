@@ -9,14 +9,13 @@ import SwiftData
 import Foundation
 
 @Model
-class Task: Identifiable {
+class TaskItem: Identifiable {
     var id: UUID = UUID()
     var title: String
     var details: String
     var isCompleted: Bool = false
     var dueDate: Date
     var priority: Int
-    
     
     init(title: String, details: String, isCompleted: Bool, dueDate: Date, priority: Int) {
         self.title = title

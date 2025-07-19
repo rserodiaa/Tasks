@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct TaskCard: View {
-    let task: Task
+    let task: TaskItem
     
     var body: some View {
         HStack(spacing: 16) {
@@ -45,5 +45,5 @@ struct TaskCard: View {
 }
 
 #Preview {
-    TaskCard(task: Task(title: "Very Big", details: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.", isCompleted: false, dueDate: Date().addingTimeInterval(-86400), priority: 3))
+    TaskCard(task: TaskItem(title: "Very Big", details: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.", isCompleted: false, dueDate: Date().addingTimeInterval(-86400), priority: 3))
 }

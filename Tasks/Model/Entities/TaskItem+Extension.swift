@@ -1,12 +1,12 @@
 //
-//  Task+Extension.swift
+//  TaskItem+Extension.swift
 //  Tasks
 //
 //  Created by Rahul Serodia on 16/07/25.
 //
 import SwiftUI
 
-extension Task {
+extension TaskItem {
     var clippedDetails: String {
         return details.truncated(to: 60)
     }

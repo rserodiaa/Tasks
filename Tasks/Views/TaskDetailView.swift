@@ -9,7 +9,7 @@ import SwiftUI
 
 struct TaskDetailView: View {
     @ObservedObject var controller: TaskController
-    @State var task: Task
+    @State var task: TaskItem
     @State private var showEdit = false
 
     var body: some View {
@@ -39,14 +39,16 @@ struct TaskDetailView: View {
                             .font(.subheadline.weight(.medium))
                     }
                     .onChange(of: task.isCompleted) { _, _ in
-                        controller.updateTask(
-                            task,
-                            title: task.title,
-                            details: task.details,
-                            dueDate: task.dueDate,
-                            priority: task.priority,
-                            isCompleted: task.isCompleted
-                        )
+                        Task {
+                            await controller.updateTask(
+                                task,
+                                title: task.title,
+                                details: task.details,
+                                dueDate: task.dueDate,
+                                priority: task.priority,
+                                isCompleted: task.isCompleted
+                            )
+                        }
                     }
                 }
                 .padding()
@@ -73,7 +75,9 @@ struct TaskDetailView: View {
 
             ToolbarItem(placement: .destructiveAction) {
                 Button {
-                    controller.delete(task)
+                    Task {
+                        await controller.delete(task)
+                    }
                 } label: {
                     Image(systemName: ImageConstants.trash)
                 }
@@ -116,5 +120,5 @@ struct infoRow: View {
 }
 
 #Preview {
-    TaskDetailView(controller: .preview, task: Task(title: "Finish Assignment", details: "Complete all partsComplete all partsComplete all partsComplete all partsComplete all partsComplete all partsComplete all partsComplete all partsComplete all partsComplete all partsComplete all partsComplete all partsComplete all partsComplete all partsComplete all partsComplete all partsComplete all partsComplete all partsComplete all parts", isCompleted: false, dueDate: Date(), priority: 2))
+    TaskDetailView(controller: .preview, task: TaskItem(title: "Finish Assignment", details: "Complete all partsComplete all partsComplete all partsComplete all partsComplete all partsComplete all partsComplete all partsComplete all partsComplete all partsComplete all partsComplete all partsComplete all partsComplete all partsComplete all partsComplete all partsComplete all partsComplete all partsComplete all partsComplete all parts", isCompleted: false, dueDate: Date(), priority: 2))
 }
