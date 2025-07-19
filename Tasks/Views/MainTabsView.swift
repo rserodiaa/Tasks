@@ -22,7 +22,7 @@ struct MainTabView: View {
                         .transition(.opacity)
                 }
             }
-            .animation(.easeInOut(duration: 0.3), value: selectedTab)
+            .animation(.easeInOut(duration: 0.1), value: selectedTab)
             CustomTabView(selectedTab: $selectedTab)
                 .padding(.bottom, 30)
         }
