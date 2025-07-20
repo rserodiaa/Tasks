@@ -17,9 +17,13 @@ extension Date {
 }
 
 extension DateFormatter {
-    static let monthYear: DateFormatter = {
+    private static func make(with format: String) -> DateFormatter {
         let formatter = DateFormatter()
-        formatter.dateFormat = "MMMM yyyy"
+        formatter.dateFormat = format
         return formatter
-    }()
+    }
+
+    static let monthYear = make(with: "MMMM yyyy")
+    static let day = make(with: "d")
+    static let month = make(with: "MMM")
 }

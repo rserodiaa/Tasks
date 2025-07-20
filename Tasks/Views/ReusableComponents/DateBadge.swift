@@ -11,15 +11,11 @@ struct DateBadge: View {
     let date: Date
     
     var day: String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "d"
-        return formatter.string(from: date)
+        return DateFormatter.day.string(from: date)
     }
     
     var month: String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "MMM"
-        return formatter.string(from: date).uppercased()
+        return DateFormatter.month.string(from: date).uppercased()
     }
 
     var body: some View {
