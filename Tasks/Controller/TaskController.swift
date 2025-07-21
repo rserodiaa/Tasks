@@ -7,15 +7,11 @@
 
 import Foundation
 
-// TODO: CATCH, manually remove from allTasks
 @MainActor
 final class TaskController: ObservableObject {
     private let repository: TaskRepositoryProtocol
     private let notificationService: NotificationServiceProtocol
-    lazy var service: NotificationServiceProtocol = {
-        return NotificationService.shared
-    }()
-
+    
     @Published private(set) var allTasks: [TaskItem] = [] {
         didSet {
             buildTasksByDay()
@@ -23,18 +19,19 @@ final class TaskController: ObservableObject {
     }
     @Published var sortOption: SortOption = .dueDate
     @Published var filterOption: FilterOption = .all
+    @Published var errorMessage: String?
+    @Published var showErrorAlert = false
     private(set) var tasksByDay: [Date: [TaskItem]] = [:]
-
-
+    
     var tasks: [TaskItem] {
         var result = allTasks
-
+        
         switch filterOption {
         case .all: break
         case .completed: result = result.filter { $0.isCompleted }
         case .incomplete: result = result.filter { !$0.isCompleted }
         }
-
+        
         switch sortOption {
         case .dueDate: result.sort { $0.dueDate < $1.dueDate }
         case .priority: result.sort { $0.priority < $1.priority }
@@ -49,10 +46,14 @@ final class TaskController: ObservableObject {
     
     // MARK: - CRUD operations
     func loadTasks() async {
-        let tasks = await repository.fetchTasks()
-        self.allTasks = tasks
+        do {
+            let tasks = try await repository.fetchTasks()
+            self.allTasks = tasks
+        } catch {
+            await handle(error)
+        }
     }
-
+    
     func addTask(
         title: String,
         details: String,
@@ -61,13 +62,17 @@ final class TaskController: ObservableObject {
         isCompleted: Bool = false,
         setReminder: Bool = false
     ) async {
-        let task = TaskItem(title: title, details: details, isCompleted: isCompleted, dueDate: dueDate, priority: priority)
-        await repository.addTask(task)
-        
-        if setReminder {
-            await handleNotification(for: task)
+        do {
+            let task = TaskItem(title: title, details: details, isCompleted: isCompleted, dueDate: dueDate, priority: priority)
+            try await repository.addTask(task)
+            
+            if setReminder {
+                await handleNotification(for: task)
+            }
+            await loadTasks()
+        } catch {
+            await handle(error)
         }
-        await loadTasks()
     }
     
     func updateTask(
@@ -79,22 +84,29 @@ final class TaskController: ObservableObject {
         isCompleted: Bool,
         setReminder: Bool = false
     ) async {
-        task.title = title
-        task.details = details
-        task.dueDate = dueDate
-        task.priority = priority
-        task.isCompleted = isCompleted
-        await repository.updateTask(task)
-        if (setReminder && !isCompleted) {
-            await handleNotification(for: task)
+        do {
+            task.title = title
+            task.details = details
+            task.dueDate = dueDate
+            task.priority = priority
+            task.isCompleted = isCompleted
+            try await repository.updateTask(task)
+            if (setReminder && !isCompleted) {
+                await handleNotification(for: task)
+            }
+            await loadTasks()
+        } catch {
+            await handle(error)
         }
-        
-        await loadTasks()
     }
-
+    
     func delete(_ task: TaskItem) async {
-        await repository.deleteTask(task)
-        await loadTasks()
+        do {
+            try await repository.deleteTask(task)
+            await loadTasks()
+        } catch {
+            await handle(error)
+        }
     }
     
     // MARK: - Calender operations
@@ -105,15 +117,27 @@ final class TaskController: ObservableObject {
     }
     
     // MARK: - Notification Logic
-    func handleNotification(for task: TaskItem, shouldCancel: Bool = false) async {
-        await notificationService.scheduleNotification(
-            title: "Reminder: \(task.title)",
-            body: "Task is due at \(task.dueDate)",
-            date: task.dueDate,
-            id: task.id.uuidString
-        )
+    private func handleNotification(for task: TaskItem, shouldCancel: Bool = false) async {
+        do {
+            try await notificationService.scheduleNotification(
+                title: "Reminder: \(task.title)",
+                body: "Task is due at \(task.dueDate)",
+                date: task.dueDate,
+                id: task.id.uuidString
+            )
+        } catch {
+            await handle(error)
+        }
+    }
+    
+    private func handle(_ error: Error) async {
+        await MainActor.run {
+            self.errorMessage = (error as? LocalizedError)?.errorDescription ?? "Something went wrong."
+            self.showErrorAlert = true
+        }
     }
 }
+
 
 // Remove later
 #if DEBUG

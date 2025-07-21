@@ -83,6 +83,11 @@ struct TaskListView: View {
         .task {
             await controller.loadTasks()
         }
+        .alert("Error", isPresented: $controller.showErrorAlert) {
+            Button("OK", role: .cancel) { }
+        } message: {
+            Text(controller.errorMessage ?? "Something went wrong.")
+        }
     }
     
     private func deleteTasks(at offsets: IndexSet) {

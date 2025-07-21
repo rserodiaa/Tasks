@@ -6,8 +6,8 @@
 //
 
 import SwiftData
+import Foundation
 
-// TODO error handling, async await
 final class TaskRepository: TaskRepositoryProtocol {
     private let context: ModelContext
 
@@ -15,22 +15,52 @@ final class TaskRepository: TaskRepositoryProtocol {
         self.context = context
     }
 
-    func fetchTasks() async -> [TaskItem] {
-        let tasks = (try? context.fetch(FetchDescriptor<TaskItem>())) ?? []
-        return tasks
+    func fetchTasks() async throws -> [TaskItem] {
+        do {
+            let tasks = try context.fetch(FetchDescriptor<TaskItem>())
+            return tasks
+        } catch {
+            throw TasksError.fetchFailed
+        }
     }
 
-    func addTask(_ task: TaskItem) {
-        context.insert(task)
-        try? context.save()
+    func addTask(_ task: TaskItem) throws {
+        do {
+            context.insert(task)
+            try context.save()
+        } catch {
+            throw TasksError.saveFailed
+        }
+        
     }
 
-    func updateTask(_ task: TaskItem) {
-        try? context.save()
+    func updateTask(_ task: TaskItem) throws {
+        do {
+            try validateTaskExists(with: task.id)
+            try context.save()
+        } catch let error as TasksError {
+            throw error
+        } catch {
+            throw TasksError.saveFailed
+        }
     }
 
-    func deleteTask(_ task: TaskItem) {
-        context.delete(task)
-        try? context.save()
+    func deleteTask(_ task: TaskItem) throws {
+        do {
+            try validateTaskExists(with: task.id)
+            context.delete(task)
+            try context.save()
+        } catch let error as TasksError {
+            throw error
+        } catch {
+            throw TasksError.deleteFailed
+        }
+    }
+
+    private func validateTaskExists(with id: UUID) throws {
+        let descriptor = FetchDescriptor<TaskItem>(predicate: #Predicate { $0.id == id })
+        guard let _ = try context.fetch(descriptor).first else {
+            throw TasksError.notFound
+        }
     }
 }

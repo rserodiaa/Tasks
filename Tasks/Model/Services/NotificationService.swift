@@ -13,17 +13,16 @@ final class NotificationService: NotificationServiceProtocol {
     static let shared = NotificationService()
     private init() { }
         
-    func requestAuthorization() async {
-            do {
-                let granted = try await UNUserNotificationCenter.current()
-                    .requestAuthorization(options: [.alert, .sound, .badge])
-                print("Notification permission granted: \(granted)")
-            } catch {
-                print("Failed to request notification permission: \(error)")
-            }
+    func requestAuthorization() async throws {
+        let granted = try await UNUserNotificationCenter.current()
+            .requestAuthorization(options: [.alert, .sound, .badge])
+        
+        if !granted {
+            throw TasksError.notificationPermissionDenied
         }
+    }
     
-    func scheduleNotification(title: String, body: String, date: Date, id: String) async {
+    func scheduleNotification(title: String, body: String, date: Date, id: String) async throws {
             let content = UNMutableNotificationContent()
             content.title = title
             content.body = body
@@ -38,7 +37,7 @@ final class NotificationService: NotificationServiceProtocol {
                 try await UNUserNotificationCenter.current().add(request)
                 print("Notification scheduled for task id: \(id)")
             } catch {
-                print("Failed to schedule notification: \(error)")
+                throw TasksError.notificationFailed
             }
         }
 

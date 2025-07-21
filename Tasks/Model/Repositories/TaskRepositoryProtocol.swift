@@ -7,8 +7,8 @@
 
 @MainActor
 protocol TaskRepositoryProtocol {
-    func fetchTasks() async -> [TaskItem]
-    func addTask(_ task: TaskItem) async
-    func updateTask(_ task: TaskItem) async
-    func deleteTask(_ task: TaskItem) async
+    func fetchTasks() async throws -> [TaskItem]
+    func addTask(_ task: TaskItem) async throws
+    func updateTask(_ task: TaskItem) async throws
+    func deleteTask(_ task: TaskItem) async throws
 }

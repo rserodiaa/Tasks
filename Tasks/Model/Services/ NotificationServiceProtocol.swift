@@ -8,7 +8,7 @@
 import Foundation
 
 protocol NotificationServiceProtocol {
-    func requestAuthorization() async
-    func scheduleNotification(title: String, body: String, date: Date, id: String) async
+    func requestAuthorization() async throws
+    func scheduleNotification(title: String, body: String, date: Date, id: String) async throws
     func cancelNotification(id: String) async
 }
