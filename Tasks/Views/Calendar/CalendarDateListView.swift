@@ -7,20 +7,65 @@
 
 import SwiftUI
 
+//struct CalendarDateListView: View {
+//    let tasks: [TaskItem]
+//    
+//    var body: some View {
+//        ZStack {
+//            Image("backdrop")
+//                .resizable()
+//                .ignoresSafeArea()
+//            List(tasks) { task in
+//                TaskCard(task: task)
+//            }
+//            .scrollContentBackground(.hidden)
+//            .background(Color.white.opacity(0.3))
+//        }
+//        .navigationTitle(tasks.first?.dueDate.formatted(.dateTime.day(.twoDigits).month(.abbreviated)) ?? StringConstants.tasks)
+//    }
+//}
 struct CalendarDateListView: View {
     let tasks: [TaskItem]
     
     var body: some View {
-        ZStack {
+        ZStack(alignment: .top) {
             Image("backdrop")
                 .resizable()
                 .ignoresSafeArea()
-            List(tasks) { task in
-                TaskCard(task: task)
+            
+            VStack(spacing: 16) {
+                if let date = tasks.first?.dueDate {
+                    VStack(spacing: 4) {
+                        Image(systemName: "calendar.circle.fill")
+                            .font(.system(size: 40))
+                            .foregroundStyle(.blue.gradient)
+                        
+                        Text(date.formatted(.dateTime.day().month(.wide).year()))
+                            .font(.title3.weight(.medium))
+                            .foregroundStyle(.primary)
+                    }
+                    .padding()
+                    .background(.ultraThinMaterial)
+                    .clipShape(RoundedRectangle(cornerRadius: 20))
+                    .shadow(radius: 10)
+                }
+                
+                List(tasks) { task in
+                    TaskCard(task: task)
+                        .listRowBackground(Color.clear)
+                        .listRowSeparator(.hidden)
+                }
+                .scrollContentBackground(.hidden)
+                .background(Color.white.opacity(0.2))
+                .clipShape(RoundedRectangle(cornerRadius: 25))
             }
-            .scrollContentBackground(.hidden)
-            .background(Color.white.opacity(0.3))
+            .padding(.top, 32)
+            .padding(.horizontal)
         }
-        .navigationTitle(tasks.first?.dueDate.formatted(.dateTime.day(.twoDigits).month(.abbreviated)) ?? StringConstants.tasks)
+        .navigationTitle("")
     }
+}
+
+#Preview {
+    CalendarDateListView(tasks: TaskController.mockTask)
 }

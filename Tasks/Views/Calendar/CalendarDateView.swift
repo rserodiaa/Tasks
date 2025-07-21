@@ -9,15 +9,15 @@ import SwiftUI
 
 struct CalendarDateView: View {
     let date: Date
-    let tasks: [TaskItem]
+    let hasTasks: Bool
 
     var body: some View {
         let day = Calendar.current.component(.day, from: date)
         let isToday = Calendar.current.isDate(date, inSameDayAs: Date())
 
         ZStack(alignment: .center) {
-            Circle()
-                .fill(isToday ? Color.blue : Color.clear)
+            RoundedRectangle(cornerRadius: 8)
+                .fill(isToday ? Color.blue : Color.orange.opacity(0.2))
                 .frame(width: 36, height: 36)
                 .overlay(
                     Text("\(day)")
@@ -26,15 +26,21 @@ struct CalendarDateView: View {
                 )
 
             // Color dot indicator for tasks
-            if !tasks.isEmpty {
-                Rectangle()
-                    .fill(Priority(safeRawValue: tasks.first!.priority).color)
+            if hasTasks {
+                Circle()
+                    .fill(.blue)
                     .frame(width: 6, height: 6)
-                    .cornerRadius(3)
-                    .offset(y: 25)
+                    .offset(y: 23)
+                    
             }
         }
+        .padding(.bottom, 8)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .contentShape(Rectangle())
     }
+}
+
+#Preview {
+    CalendarDateView(date: .distantPast,
+                     hasTasks: true)
 }

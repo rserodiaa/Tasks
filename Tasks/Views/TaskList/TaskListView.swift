@@ -18,6 +18,9 @@ struct TaskListView: View {
     var body: some View {
         NavigationStack {
             ZStack(alignment: .bottom) {
+                Image("backdrop")
+                    .resizable()
+                    .ignoresSafeArea()
             VStack {
                 HStack {
                     Picker(Constants.filter, selection: $controller.filterOption) {
@@ -46,11 +49,14 @@ struct TaskListView: View {
                     ForEach(controller.tasks) { task in
                         NavigationLink(value: task) {
                             TaskCard(task: task)
+                                .listRowBackground(Color.clear)
+                                .listRowSeparator(.hidden)
                         }
                     }
                     .onDelete(perform: deleteTasks)
                 }
-                .listStyle(.plain)
+                .scrollContentBackground(.hidden)
+                .background(Color.white.opacity(0.2))
             }
         }
             .navigationTitle(StringConstants.tasks)

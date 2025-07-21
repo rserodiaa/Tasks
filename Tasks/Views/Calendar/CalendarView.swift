@@ -11,7 +11,7 @@ struct CalendarView: View {
     @ObservedObject var controller: TaskController
     @State private var currentMonth = Calendar.current.component(.month, from: Date())
     @State private var currentYear = Calendar.current.component(.year, from: Date())
-    
+
     var body: some View {
         NavigationStack {
             ZStack {
@@ -22,10 +22,13 @@ struct CalendarView: View {
                 VStack(alignment: .center, spacing: 0) {
                     calenderHeader
                     dayLabels
+                        .padding(.bottom, 8)
+
                     LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 7)) {
                         ForEach(allDaysInMonth(month: currentMonth, year: currentYear), id: \.self) { date in
                             NavigationLink(value: date) {
-                                CalendarDateView(date: date, tasks: controller.tasksByDay[date] ?? [])
+                                CalendarDateView(date: date,
+                                                 hasTasks: controller.tasksByDay[date]?.isEmpty == false)
                             }
                         }
                     }
@@ -52,14 +55,22 @@ struct CalendarView: View {
     
     private var calenderHeader: some View {
         return HStack {
-            Button { updateMonth(-1) } label: {
+            Button {
+                withAnimation {
+                    updateMonth(-1)
+                }
+            } label: {
                 Image(systemName: ImageConstants.left)
                     .font(.headline)
             }
             Text(currentMonthTitle())
                 .font(.title2)
                 .frame(maxWidth: .infinity)
-            Button { updateMonth(1) } label: {
+            Button {
+                withAnimation {
+                    updateMonth(1)
+                }
+            } label: {
                 Image(systemName: ImageConstants.right).font(.headline)
             }
         }

@@ -8,7 +8,7 @@
 import Foundation
 import UserNotifications
 
-class NotificationService: NotificationServiceProtocol {
+final class NotificationService: NotificationServiceProtocol {
     
     static let shared = NotificationService()
     private init() { }

@@ -8,7 +8,7 @@
 import SwiftData
 
 // TODO error handling, async await
-class TaskRepository: TaskRepositoryProtocol {
+final class TaskRepository: TaskRepositoryProtocol {
     private let context: ModelContext
 
     init(context: ModelContext) {
