@@ -10,7 +10,7 @@ import SwiftUI
 struct FullScreenBackground: ViewModifier {
     func body(content: Content) -> some View {
         ZStack {
-            Image("backdrop")
+            Image(ImageConstants.backdrop)
                 .resizable()
                 .ignoresSafeArea()
             content

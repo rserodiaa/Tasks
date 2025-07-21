@@ -16,7 +16,7 @@ struct CalendarDateListView: View {
                     VStack(spacing: 4) {
                         Image(systemName: ImageConstants.calendarCircle)
                             .font(.system(size: 40))
-                            .foregroundStyle(.blue.gradient)
+                            .foregroundStyle(.orange.gradient)
                         
                         Text(date.formatted(.dateTime.day().month(.wide).year()))
                             .font(.title3.weight(.medium))

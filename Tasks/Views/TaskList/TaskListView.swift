@@ -9,38 +9,18 @@ import SwiftUI
 
 private struct Constants {
     static let filter = "Filter"
+    static let errorTitle = "Error"
+    static let ok = "OK"
 }
 
 struct TaskListView: View {
     @StateObject var controller: TaskController
     @State private var showCreate = false
-
+    
     var body: some View {
         NavigationStack {
             VStack {
-                HStack {
-                    Picker(Constants.filter, selection: $controller.filterOption) {
-                        ForEach(FilterOption.allCases) { option in
-                            Text(option.id).tag(option)
-                        }
-                    }
-                    .pickerStyle(.segmented)
-
-                    Menu {
-                        ForEach(SortOption.allCases) { option in
-                            Button {
-                                controller.sortOption = option
-                            } label: {
-                                Text(option.id)
-                            }
-                        }
-                    } label: {
-                        Image(systemName: ImageConstants.sort)
-                            .font(.title2)
-                    }
-                }
-                .padding(.horizontal)
-                
+                sortAndFilterRow
                 List {
                     ForEach(controller.tasks) { task in
                         NavigationLink(value: task) {
@@ -51,6 +31,8 @@ struct TaskListView: View {
                     }
                     .onDelete(perform: deleteTasks)
                 }
+                .padding(.bottom, 60)
+                .scrollIndicators(.hidden)
                 .scrollContentBackground(.hidden)
                 .background(Color.white.opacity(0.2))
             }
@@ -79,11 +61,36 @@ struct TaskListView: View {
         .task {
             await controller.loadTasks()
         }
-        .alert("Error", isPresented: $controller.showErrorAlert) {
-            Button("OK", role: .cancel) { }
+        .alert(Constants.errorTitle, isPresented: $controller.showErrorAlert) {
+            Button(Constants.ok, role: .cancel) { }
         } message: {
-            Text(controller.errorMessage ?? "Something went wrong.")
+            Text(controller.errorMessage)
         }
+    }
+    
+    private var sortAndFilterRow: some View {
+        return HStack {
+            Picker(Constants.filter, selection: $controller.filterOption) {
+                ForEach(FilterOption.allCases) { option in
+                    Text(option.id).tag(option)
+                }
+            }
+            .pickerStyle(.segmented)
+            
+            Menu {
+                ForEach(SortOption.allCases) { option in
+                    Button {
+                        controller.sortOption = option
+                    } label: {
+                        Text(option.id)
+                    }
+                }
+            } label: {
+                Image(systemName: ImageConstants.sort)
+                    .font(.title2)
+            }
+        }
+        .padding(.horizontal)
     }
     
     private func deleteTasks(at offsets: IndexSet) {

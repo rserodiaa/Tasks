@@ -7,6 +7,12 @@
 
 import Foundation
 
+private struct Constants {
+    static let reminderText = "Reminder:"
+    static let reminderBody = "Task is due at"
+    static let errorMessage = "Something went wrong."
+}
+
 @MainActor
 final class TaskController: ObservableObject {
     private let repository: TaskRepositoryProtocol
@@ -19,7 +25,7 @@ final class TaskController: ObservableObject {
     }
     @Published var sortOption: SortOption = .dueDate
     @Published var filterOption: FilterOption = .all
-    @Published var errorMessage: String?
+    @Published var errorMessage: String = Constants.errorMessage
     @Published var showErrorAlert = false
     private(set) var tasksByDay: [Date: [TaskItem]] = [:]
     
@@ -120,8 +126,8 @@ final class TaskController: ObservableObject {
     private func handleNotification(for task: TaskItem, shouldCancel: Bool = false) async {
         do {
             try await notificationService.scheduleNotification(
-                title: "Reminder: \(task.title)",
-                body: "Task is due at \(task.dueDate)",
+                title: "\(Constants.reminderText) \(task.title)",
+                body: "\(Constants.reminderBody) \(task.dueDate)",
                 date: task.dueDate,
                 id: task.id.uuidString
             )
@@ -132,7 +138,7 @@ final class TaskController: ObservableObject {
     
     private func handle(_ error: Error) async {
         await MainActor.run {
-            self.errorMessage = (error as? LocalizedError)?.errorDescription ?? "Something went wrong."
+            self.errorMessage = (error as? LocalizedError)?.errorDescription ?? Constants.errorMessage
             self.showErrorAlert = true
         }
     }

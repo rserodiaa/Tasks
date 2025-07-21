@@ -98,7 +98,7 @@ struct TaskDetailView: View {
     }    
 }
 
-struct infoRow: View {
+private struct infoRow: View {
     let icon, label, value: String
     var color: Color = .primary
     
@@ -120,5 +120,5 @@ struct infoRow: View {
 }
 
 #Preview {
-    TaskDetailView(controller: .preview, task: TaskItem(title: "Finish Assignment", details: "Complete all partsComplete all partsComplete all partsComplete all partsComplete all partsComplete all partsComplete all partsComplete all partsComplete all partsComplete all partsComplete all partsComplete all partsComplete all partsComplete all partsComplete all partsComplete all partsComplete all partsComplete all partsComplete all parts", isCompleted: false, dueDate: Date(), priority: 2))
+    TaskDetailView(controller: .preview, task: TaskController.mockTask.first!)
 }

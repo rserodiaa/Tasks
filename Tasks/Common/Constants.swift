@@ -17,6 +17,7 @@ struct ImageConstants {
     static let left = "chevron.left"
     static let right = "chevron.right"
     static let calendarCircle = "calendar.circle.fill"
+    static let backdrop = "backdrop"
 }
 
 struct StringConstants {
