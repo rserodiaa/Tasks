@@ -17,10 +17,6 @@ struct TaskListView: View {
 
     var body: some View {
         NavigationStack {
-            ZStack(alignment: .bottom) {
-                Image("backdrop")
-                    .resizable()
-                    .ignoresSafeArea()
             VStack {
                 HStack {
                     Picker(Constants.filter, selection: $controller.filterOption) {
@@ -58,7 +54,7 @@ struct TaskListView: View {
                 .scrollContentBackground(.hidden)
                 .background(Color.white.opacity(0.2))
             }
-        }
+            .fullScreenBackground()
             .navigationTitle(StringConstants.tasks)
             .navigationBarTitleDisplayMode(.automatic)
             .toolbar {

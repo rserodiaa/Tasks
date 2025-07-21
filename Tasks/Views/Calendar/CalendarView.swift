@@ -14,11 +14,6 @@ struct CalendarView: View {
 
     var body: some View {
         NavigationStack {
-            ZStack {
-                Image("backdrop")
-                    .resizable()
-                    .ignoresSafeArea()
-                    
                 VStack(alignment: .center, spacing: 0) {
                     calenderHeader
                     dayLabels
@@ -34,8 +29,8 @@ struct CalendarView: View {
                     }
                 }
                 .padding(.horizontal)
-            }
-            .navigationDestination(for: Date.self) { date in
+                .fullScreenBackground()
+                .navigationDestination(for: Date.self) { date in
                 CalendarDateListView(tasks: controller.tasksByDay[date] ?? [])
             }
         }

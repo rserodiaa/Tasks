@@ -16,6 +16,7 @@ struct ImageConstants {
     static let sort = "arrow.up.arrow.down.circle"
     static let left = "chevron.left"
     static let right = "chevron.right"
+    static let calendarCircle = "calendar.circle.fill"
 }
 
 struct StringConstants {

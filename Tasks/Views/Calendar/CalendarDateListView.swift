@@ -7,36 +7,14 @@
 
 import SwiftUI
 
-//struct CalendarDateListView: View {
-//    let tasks: [TaskItem]
-//    
-//    var body: some View {
-//        ZStack {
-//            Image("backdrop")
-//                .resizable()
-//                .ignoresSafeArea()
-//            List(tasks) { task in
-//                TaskCard(task: task)
-//            }
-//            .scrollContentBackground(.hidden)
-//            .background(Color.white.opacity(0.3))
-//        }
-//        .navigationTitle(tasks.first?.dueDate.formatted(.dateTime.day(.twoDigits).month(.abbreviated)) ?? StringConstants.tasks)
-//    }
-//}
 struct CalendarDateListView: View {
     let tasks: [TaskItem]
     
     var body: some View {
-        ZStack(alignment: .top) {
-            Image("backdrop")
-                .resizable()
-                .ignoresSafeArea()
-            
             VStack(spacing: 16) {
                 if let date = tasks.first?.dueDate {
                     VStack(spacing: 4) {
-                        Image(systemName: "calendar.circle.fill")
+                        Image(systemName: ImageConstants.calendarCircle)
                             .font(.system(size: 40))
                             .foregroundStyle(.blue.gradient)
                         
@@ -61,8 +39,8 @@ struct CalendarDateListView: View {
             }
             .padding(.top, 32)
             .padding(.horizontal)
-        }
-        .navigationTitle("")
+            .fullScreenBackground()
+            .navigationTitle("")
     }
 }
 

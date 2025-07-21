@@ -139,7 +139,7 @@ final class TaskController: ObservableObject {
 }
 
 
-// Remove later
+// Remove later, added for previews.
 #if DEBUG
 extension TaskController {
     static var preview: TaskController {
