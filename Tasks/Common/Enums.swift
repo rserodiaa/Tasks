@@ -19,3 +19,8 @@ enum FilterOption: String, CaseIterable, Identifiable {
     case incomplete = "Incomplete"
     var id: String { self.rawValue }
 }
+
+enum CustomTabs: String, CaseIterable {
+    case home = "house.circle"
+    case calendar = "calendar.circle"
+}

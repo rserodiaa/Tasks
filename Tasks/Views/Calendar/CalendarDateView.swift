@@ -17,7 +17,7 @@ struct CalendarDateView: View {
 
         ZStack(alignment: .center) {
             RoundedRectangle(cornerRadius: 8)
-                .fill(isToday ? Color.blue : Color.orange.opacity(0.2))
+                .fill(isToday ? Color.blue : Color.primaryColor.opacity(0.2))
                 .frame(width: 36, height: 36)
                 .overlay(
                     Text("\(day)")

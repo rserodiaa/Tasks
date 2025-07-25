@@ -6,6 +6,7 @@
 //
 
 import XCTest
+import SwiftUI
 @testable import Tasks
 
 @MainActor
@@ -160,11 +161,11 @@ final class TaskControllerTests: XCTestCase {
     func testPriorityValues() async {
         let task = mockTasks.first!
         
-        XCTAssertEqual(Priority(safeRawValue: task.priority).color, .orange)
+        XCTAssertEqual(Priority(safeRawValue: task.priority).color, Color.mediumPriority)
         XCTAssertEqual(Priority(safeRawValue: task.priority).value, "Medium")
         
         let badPriorityTask = TaskItem(title: "Bad Priority", details: "", isCompleted: false, dueDate: .now, priority: 5)
-        XCTAssertEqual(Priority(safeRawValue: badPriorityTask.priority).color, .blue)
+        XCTAssertEqual(Priority(safeRawValue: badPriorityTask.priority).color, Color.primaryColor)
         XCTAssertEqual(Priority(safeRawValue: badPriorityTask.priority).value, "Unknown")
     }
 }

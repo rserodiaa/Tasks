@@ -28,8 +28,3 @@ struct StringConstants {
     static let dueDate = "Due Date"
     static let setReminder = "Set Reminder"
 }
-
-enum CustomTabs: String, CaseIterable {
-    case home = "house.circle"
-    case calendar = "calendar.circle"
-}

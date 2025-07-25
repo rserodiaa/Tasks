@@ -32,10 +32,10 @@ enum Priority: Int, CaseIterable, Identifiable {
     
     var color: Color {
         switch self {
-        case .high: return .red
-        case .medium: return .orange
-        case .low: return .yellow
-        case .unknown: return .blue
+        case .high: return Color.highPriority
+        case .medium: return Color.mediumPriority
+        case .low: return Color.lowPriority
+        case .unknown: return Color.primaryColor
         }
     }
 }

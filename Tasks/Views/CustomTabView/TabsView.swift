@@ -23,10 +23,10 @@ struct CustomTabView: View {
                 }
             }
         .padding()
-        .background(Color.orange
+        .background(Color.primaryColor
             .clipShape(TabsCurve(peakPoint: getCurvePoint() - 18)))
         .overlay(Circle()
-            .fill(.orange)
+            .fill(Color.primaryColor)
             .frame(width: 10, height: 10)
             .offset(x: getCurvePoint() - 22)
                  , alignment: .bottomLeading

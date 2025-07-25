@@ -29,7 +29,7 @@ struct TasksApp: App {
             let repository = TaskRepository(context: sharedModelContainer.mainContext)
             let controller = TaskController(repository: repository, notificationService: notificationService)
             MainTabView(controller: controller)
-                            .tint(.orange)
+                            .tint(Color.tintColor)
         }
     }
 }
