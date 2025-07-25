@@ -18,14 +18,17 @@ extension Color {
         )
     }
     
-    static let primaryColor = Color(hex: 0x89AAE6)
-    static let tintColor = Color(hex: 0x3685B5)
-    static let secondaryColor = Color.blue
+    static let primaryColor = Color(hex: 0x4464AD)
     
     static let calendarTop = Color(hex: 0x47A8BD)
     static let calendarBottom = Color(hex: 0x1E3888)
     
-    static let lowPriority = Color(hex: 0xE0CA3C)
+    static let lowPriority = Color(hex: 0xF9DC5C)
     static let mediumPriority = Color(hex: 0xFFAD69)
-    static let highPriority = Color(hex: 0x9C3848)
+    static let highPriority = Color(hex: 0xD16666)
+    
+    static let lightBlue = Color(hex: 0xBFDBF7)
+    
+    static let primaryText = Color(hex: 0x403D39)
+    static let secondaryText = Color(hex: 0x7989A4)
 }

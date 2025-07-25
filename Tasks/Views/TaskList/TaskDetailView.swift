@@ -19,12 +19,12 @@ struct TaskDetailView: View {
                 VStack(alignment: .leading, spacing: 16) {
                     Text(task.title)
                         .font(.system(size: 28, weight: .bold))
-                        .foregroundColor(.primary)
+                        .foregroundColor(Color.primaryText)
 
                     if !task.details.isEmpty {
                         Text(task.details)
                             .font(.body)
-                            .foregroundColor(.secondary)
+                            .foregroundColor(Color.secondaryText)
                     }
 
                     Divider().padding(.vertical, 4)
@@ -54,7 +54,7 @@ struct TaskDetailView: View {
                 .padding()
                 .background(
                     RoundedRectangle(cornerRadius: 20)
-                        .fill(.gray.opacity(0.15))
+                        .fill(Color.lightBlue.opacity(0.85))
                         .background(.regularMaterial)
                 )
                 .clipShape(RoundedRectangle(cornerRadius: 20))
@@ -100,7 +100,7 @@ struct TaskDetailView: View {
 
 private struct infoRow: View {
     let icon, label, value: String
-    var color: Color = .primary
+    var color: Color = Color.primaryText
     
     var body: some View {
         HStack(spacing: 10) {
@@ -110,7 +110,7 @@ private struct infoRow: View {
             VStack(alignment: .leading) {
                 Text(label)
                     .font(.caption)
-                    .foregroundColor(.secondary)
+                    .foregroundColor(Color.secondaryText)
                 Text(value)
                     .font(.body.weight(.medium))
                     .foregroundColor(color)

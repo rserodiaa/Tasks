@@ -32,7 +32,7 @@ struct DateBadge: View {
                 .foregroundColor(.white)
                 .frame(maxWidth: .infinity)
                 .padding(3)
-                .background(Color.calendarBottom)
+                .background(Color.primaryColor)
         }
         .frame(width: 40, height: 50)
         .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
